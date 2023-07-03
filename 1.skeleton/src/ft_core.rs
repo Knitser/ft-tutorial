@@ -1,4 +1,4 @@
-use near_sdk::{Gas, ext_contract, PromiseOrValue, assert_one_yocto, PromiseResult};
+use near_sdk::{assert_one_yocto, ext_contract, Gas, PromiseOrValue, PromiseResult};
 
 use crate::*;
 
