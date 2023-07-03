@@ -4,6 +4,7 @@ use near_sdk::json_types::U128;
 use near_sdk::{env, near_bindgen, AccountId, Balance, PanicOnDefault, StorageUsage};
 
 pub mod ft_core;
+pub mod internal;
 pub mod metadata;
 pub mod storage;
 
@@ -18,7 +19,8 @@ pub const FT_METADATA_SPEC: &str = "ft-1.0.0";
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
-    /// Metadata for the fungible token.
+    pub accounts: LookupMap<AccountId, Balance>,
+    pub total_supply: Balance,
     pub metadata: LazyOption<FungibleTokenMetadata>,
 }
 
@@ -55,6 +57,8 @@ impl Contract {
     #[init]
     pub fn new(owner_id: AccountId, total_supply: U128, metadata: FungibleTokenMetadata) -> Self {
         let mut this = Self {
+            accounts: LookupMap::new(StorageKey::Accounts.try_to_vec().unwrap()),
+            total_supply: total_supply.0,
             metadata: LazyOption::new(StorageKey::Metadata.try_to_vec().unwrap(), Some(&metadata)),
         };
         this
