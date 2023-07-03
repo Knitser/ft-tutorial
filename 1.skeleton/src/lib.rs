@@ -18,16 +18,15 @@ pub const FT_METADATA_SPEC: &str = "ft-1.0.0";
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
-    /*
-        FILL THIS IN
-    */
+    /// Metadata for the fungible token.
+    pub metadata: LazyOption<FungibleTokenMetadata>,
 }
 
 /// Helper structure for keys of the persistent collections.
 #[derive(BorshSerialize)]
 pub enum StorageKey {
     Accounts,
-    Metadata
+    Metadata,
 }
 
 #[near_bindgen]
@@ -36,23 +35,28 @@ impl Contract {
     /// default metadata (for example purposes only).
     #[init]
     pub fn new_default_meta(owner_id: AccountId, total_supply: U128) -> Self {
-        /*
-            FILL THIS IN
-        */
-        todo!(); //remove once code is filled in.
+        Self::new(
+            owner_id,
+            total_supply,
+            FungibleTokenMetadata {
+                spec: FT_METADATA_SPEC.to_string(),
+                name: "Donutboys".to_string(),
+                symbol: "DNTB".to_string(),
+                icon: Some(DATA_IMAGE_SVG_GT_ICON.to_string()),
+                reference: None,
+                reference_hash: None,
+                decimals: 24,
+            },
+        )
     }
 
     /// Initializes the contract with the given total supply owned by the given `owner_id` with
     /// the given fungible token metadata.
     #[init]
-    pub fn new(
-        owner_id: AccountId,
-        total_supply: U128,
-        metadata: FungibleTokenMetadata,
-    ) -> Self {
-        /*
-            FILL THIS IN
-        */
-        todo!(); //remove once code is filled in.
+    pub fn new(owner_id: AccountId, total_supply: U128, metadata: FungibleTokenMetadata) -> Self {
+        let mut this = Self {
+            metadata: LazyOption::new(StorageKey::Metadata.try_to_vec().unwrap(), Some(&metadata)),
+        };
+        this
     }
 }
