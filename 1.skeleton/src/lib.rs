@@ -27,6 +27,8 @@ pub struct Contract {
     /// Total supply of all tokens.
     pub total_supply: Balance,
 
+    pub bytes_for_longest_account_id: StorageUsage,
+
     /// Metadata for the contract itself
     pub metadata: LazyOption<FungibleTokenMetadata>,
 }
