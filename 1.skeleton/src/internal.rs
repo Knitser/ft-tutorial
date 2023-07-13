@@ -3,10 +3,19 @@ use near_sdk::require;
 use crate::*;
 
 impl Contract {
+    /// Internal method for force getting the balance of an account. If the account doesn't have a balance, panic with a custom message.
+    pub(crate) fn internal_unwrap_balance_of(&self, account_id: &AccountId) -> Balance {
+        match self.accounts.get(account_id) {
+            Some(balance) => balance,
+            None => {
+                env::panic_str(format!("The account {} is not registered", &account_id).as_str())
+            }
+        }
+    }
     /// Internal method for depositing some amount of FTs into an account.
     pub(crate) fn internal_deposit(&mut self, account_id: &AccountId, amount: Balance) {
         // Get the current balance of the account.
-        let balance = self.accounts.get(&account_id).unwrap_or(0);
+        let balance = self.internal_unwrap_balance_of(account_id);
 
         // Add the amount to the balance and insert the new balance into the accounts map
         if let Some(new_balance) = balance.checked_add(amount) {
